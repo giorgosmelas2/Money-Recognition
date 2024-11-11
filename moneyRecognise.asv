@@ -1,0 +1,19 @@
+data = readtable('data_banknote_authentication.txt');
+%disp(data);
+
+numRows = size(data, 1);
+randomOrder = randperm(numRows);
+
+suffledData = data(randomOrder, :);
+
+n = ceil(size(data, 1)*0.7);
+
+train_data = suffledData(1:n, 1:4);
+train_results = suffledData(1:n, 5);
+
+test_data = suffledData(n+1, 1:4);
+test_results = suffledData(n+1, 5);
+
+fis = genfis3(train_data, )
+
+
