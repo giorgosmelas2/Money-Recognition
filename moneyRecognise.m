@@ -14,14 +14,33 @@ test_data = table2array(suffledData(n+1:end, 1:end-1));
 test_results = table2array(suffledData(n+1:end, end));
 
 %Training model
-fis = genfis3(train_data, train_results, 'sugeno', 3);
+%{
+%Grid method
+opt = genfisOptions('GridPartition');
+opt.NumMembershipFunctions = [2 2 2 2];
+opt.InputMembershipFunctionType = ["gaussmf" "gaussmf" "gaussmf" "gaussmf"];
+%}
+
+
+%Subtractive method
+opt = genfisOptions('SubtractiveClustering');
+opt.ClusterInfluenceRange = 0.5;
+%}
+
+%{
+%FCM method
+opt = genfisOptions('FCMClustering');
+opt.NumClusters = 2; 
+%}
+
+fis = genfis(train_data, train_results, opt);
 options = anfisOptions('InitialFIS', fis, ...
-                       'EpochNumber', 500, ...
+                       'EpochNumber', 50, ...
                        'DisplayANFISInformation', true, ...
                        'DisplayErrorValues', true, ...
                        'DisplayStepSize', true, ...
                        'DisplayFinalResults', true);
-                   
+  
 trainingDataWithLabels = [train_data, train_results];
 [trainedFIS, trainingError] = anfis(trainingDataWithLabels, options);
 
